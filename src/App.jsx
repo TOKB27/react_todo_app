@@ -44,7 +44,17 @@ export const App = () => {
 
   return (
     <div>
-      <TodoInput todo={todo} setTodo={setTodo} addTodo={addTodo} />
+      <TodoInput
+        todo={todo}
+        setTodo={setTodo}
+        addTodo={addTodo}
+        disabled={todos.length >= 5}
+      />
+      {todos.length >= 5 && (
+        <p style={{ color: "red" }}>
+          登録できるtodo5個まで。消化してください。
+        </p>
+      )}
       <main>
         <TodoList
           todos={todos}
