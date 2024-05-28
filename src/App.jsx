@@ -1,28 +1,33 @@
-import React, { useState, useEffect } from "react";
+// App.jsx
+import React, { createContext, useContext, useState, useEffect } from "react";
 import "./styles.css";
 import { TodoList } from "./components/TodoList.jsx";
 import { TodayTodoList } from "./components/TodayTodoList.jsx";
 import { CompletedTodoList } from "./components/CompletedTodoList.jsx";
 import { TodoInput } from "./components/TodoInput.jsx";
 
+// コンテキストの作成
+const ThemeContext = createContext();
+
 export const App = () => {
+  const [theme, setTheme] = useState("light");
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [todayTodos, setTodayTodos] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [showMessage, setShowMessage] = useState(true);
 
-  // レンダリング後に実行したい処理を指定
   useEffect(() => {
     // 10秒後にメッセージを非表示にするタイマーを設定
     const timer = setTimeout(() => {
       setShowMessage(false);
     }, 10000);
-
-    // クリーンアップ関数でタイマーをクリア
-    // コンポーネントがアンマウントされた後にタイマーが動作し続けるのを防ぐため
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    document.body.className = theme + "-mode";
+  }, [theme]);
 
   const addTodo = () => {
     if (todo.trim() !== "") {
@@ -56,8 +61,11 @@ export const App = () => {
   };
 
   return (
-    <div>
+    <ThemeContext.Provider value={theme}>
       <div>{showMessage && <p>こんにちは、今日も頑張りましょう！</p>}</div>
+      <button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
+        テーマ変更
+      </button>
       <TodoInput
         todo={todo}
         setTodo={setTodo}
@@ -90,6 +98,6 @@ export const App = () => {
           setCompletedTodos={setCompletedTodos}
         />
       </main>
-    </div>
+    </ThemeContext.Provider>
   );
 };
